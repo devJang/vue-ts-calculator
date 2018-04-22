@@ -1,43 +1,36 @@
 <template>
   <div class="box">
-    <div class="display">
-      <input
-        v-model.lazy="total"
-        @keydown.enter="submit"
-        type="text"
-        size="15.75"
-      >
-    </div>
+    <calc-input :total="total" />
     <div class="keys">
       <p>
-        <button @click="clearTotal" class="button gray">mrc</button>
-        <button @click="addNumber" class="button gray">(</button>
-        <button @click="addNumber" class="button gray">)</button>
-        <button @click="addNumber" class="button pink">/</button>
+        <calc-button :eventFunc="clearTotal" :className="'button gray'" showText="mrc" />
+        <calc-button :eventFunc="addNumber" :className="'button gray'" showText="(" />
+        <calc-button :eventFunc="addNumber" :className="'button gray'" showText=")" />
+        <calc-button :eventFunc="clickOperator" :className="'button pink'" showText="/" />
       </p>
       <p>
-        <button @click="addNumber" class="button red">7</button>
-        <button @click="addNumber" class="button red">8</button>
-        <button @click="addNumber" class="button red">9</button>
-        <button @click="addNumber" class="button pink">*</button>
+        <calc-button :eventFunc="addNumber" :className="'button red'" showText="7" />
+        <calc-button :eventFunc="addNumber" :className="'button red'" showText="8" />
+        <calc-button :eventFunc="addNumber" :className="'button red'" showText="9" />
+        <calc-button :eventFunc="clickOperator" :className="'button pink'" showText="*" />
       </p>
       <p>
-        <button @click="addNumber" class="button red">4</button>
-        <button @click="addNumber" class="button red">5</button>
-        <button @click="addNumber" class="button red">6</button>
-        <button @click="addNumber" class="button pink">-</button>
+        <calc-button :eventFunc="addNumber" :className="'button red'" showText="4" />
+        <calc-button :eventFunc="addNumber" :className="'button red'" showText="5" />
+        <calc-button :eventFunc="addNumber" :className="'button red'" showText="6" />
+        <calc-button :eventFunc="clickOperator" :className="'button pink'" showText="-" />
       </p>
       <p>
-        <button @click="addNumber" class="button red">1</button>
-        <button @click="addNumber" class="button red">2</button>
-        <button @click="addNumber" class="button red">3</button>
-        <button @click="addNumber" class="button pink">+</button>
+        <calc-button :eventFunc="addNumber" :className="'button red'" showText="1" />
+        <calc-button :eventFunc="addNumber" :className="'button red'" showText="2" />
+        <calc-button :eventFunc="addNumber" :className="'button red'" showText="3" />
+        <calc-button :eventFunc="clickOperator" :className="'button pink'" showText="+" />
       </p>
       <p>
-        <button @click="addNumber" class="button red">0</button>
-        <button @click="addNumber" class="button red">.</button>
-        <button @click="addNumber" class="button red">c</button>
-        <button @click="submit" class="button orange">=</button>
+        <calc-button :eventFunc="addNumber" :className="'button red'" showText="0" />
+        <calc-button :eventFunc="addNumber" :className="'button red'" showText="." />
+        <calc-button :eventFunc="addNumber" :className="'button red'" showText="c" />
+        <calc-button :eventFunc="submit" :className="'button orange'" showText="=" />
       </p>
     </div>
   </div>
@@ -47,49 +40,60 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
-@Component
+import CalcInput from './components/CalcInput.vue';
+import CalcButton from './components/CalcButton.vue';
+
+@Component({
+  components: {
+      CalcInput,
+      CalcButton
+    }
+})
 export default class App extends Vue {
-  total: string = '';
+  total: number = 0;
+  memory: number = 0;
 
-  addNumber({ target }: { target: HTMLInputElement }) {
-    this.total += target.textContent;
+  addNumber({ target }: { target: HTMLInputElement }): void {
+    this.total += Number(target.textContent!.trim());
   }
 
-  clearTotal() {
-    this.total = '';
+  clearTotal(): void {
+    this.total = 0;
   }
 
-  submit() {
+  isOperator(operator: string): boolean {
+    const { total } = this;
+    return total.includes(operator)
+  }
+
+  clickOperator({ target }: { target: HTMLInputElement }): void {
+    this.memory = this.total;
+    this.clearTotal();
+  }
+
+  submit(): void {
     let { total } = this;
-    // TODO: Dynamic Operator
-    // let memoryNumber = [];
-    // let memoryOperator: any[] = [];
-    let newArr: string[] = [];
     let result: number = 0;
-
-    // 현재 한자리의 이항 연산만 가능
-    if (total.includes('+')) {
-      newArr = total.split('+');
-
-      console.log(newArr);
-
-      result = Number(total[0]) + Number(total[2]);
+    
+    if (this.isOperator('+')) {
+      this.total = (this.memory + this.total).toString();
+    }
+    
+    if (this.isOperator('-')) {
+      this.total = (this.memory - this.total).toString();
+    }
+    
+    if (this.isOperator('*')) {
+      this.total = (this.memory * this.total).toString();
+    }
+    
+    if (this.isOperator('/')) {
+      this.total = (this.memory / this.total).toString();
     }
 
-    // TODO: Dynamic Operator
-    // for (let i = 0; i < total.length; i++) {
-    //   if (total[i] === '+') {
-    //     memoryOperator.push(total[i]);
-    //   }
-    //   if (total[i] === '-') memoryOperator.push(total[i]);
-    //   if (total[i] === '*') memoryOperator.push(total[i]);
-    //   if (total[i] === '/') memoryOperator.push(total[i]);
-    //   memoryNumber.push(total[i]);
-    // }
-    // console.log(memoryNumber);
-    // console.log(memoryOperator);
+    console.log(this.memory + ' ' + this.total)
 
-    this.total = String(result);
+    // this.total = String(result);
   }
 }
 </script>
@@ -109,85 +113,9 @@ body {
   left: 40%;
 }
 
-.display {
-  background-color: #222;
-  width: 220px;
-  position: relative;
-  left: 15px;
-  top: 20px;
-  height: 40px;
-}
-
-.display input {
-  position: relative;
-  left: 2px;
-  top: 2px;
-  height: 35px;
-  color: black;
-  background-color: #bccd95;
-  font-size: 21px;
-  text-align: right;
-}
-
 .keys {
   position: relative;
   top: 15px;
-}
-.button {
-  width: 40px;
-  height: 30px;
-  border: none;
-  border-radius: 8px;
-  margin-left: 17px;
-  cursor: pointer;
-  border-top: 2px solid transparent;
-}
-
-.button.gray {
-  color: white;
-  background-color: #6f6f6f;
-  border-bottom: black 2px solid;
-  border-top: 2px #6f6f6f solid;
-}
-
-.button.pink {
-  color: black;
-  background-color: #ff4561;
-  border-bottom: black 2px solid;
-}
-
-.button.red {
-  color: red;
-  background-color: 303030;
-  border-bottom: black 2px solid;
-  border-top: 2px 303030 solid;
-}
-
-.button.orange {
-  color: black;
-  background-color: FF9933;
-  border-bottom: black 2px solid;
-  border-top: 2px FF9933 solid;
-}
-
-.gray:active {
-  border-top: black 2px solid;
-  border-bottom: 2px #6f6f6f solid;
-}
-
-.pink:active {
-  border-top: black 2px solid;
-  border-bottom: #ff4561 2px solid;
-}
-
-.black:active {
-  border-top: black 2px solid;
-  border-bottom: #303030 2px solid;
-}
-
-.orange:active {
-  border-top: black 2px solid;
-  border-bottom: FF9933 2px solid;
 }
 
 p {
