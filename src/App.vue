@@ -3,34 +3,58 @@
     <calc-input :total="total" />
     <div class="keys">
       <p>
-        <calc-button :eventFunc="clearTotal" :className="'button gray'" showText="mrc" />
+        <calc-button :eventFunc="reset" :className="'button gray'" showText="mrc" />
         <calc-button :eventFunc="addNumber" :className="'button gray'" showText="(" />
         <calc-button :eventFunc="addNumber" :className="'button gray'" showText=")" />
-        <calc-button :eventFunc="clickOperator" :className="'button pink'" showText="/" />
+        <calc-button
+          id="divide"
+          :eventFunc="clickOperator"
+          :className="'button pink'"
+          showText="/"
+        />
       </p>
       <p>
         <calc-button :eventFunc="addNumber" :className="'button red'" showText="7" />
         <calc-button :eventFunc="addNumber" :className="'button red'" showText="8" />
         <calc-button :eventFunc="addNumber" :className="'button red'" showText="9" />
-        <calc-button :eventFunc="clickOperator" :className="'button pink'" showText="*" />
+        <calc-button
+          id="multi"
+          :eventFunc="clickOperator"
+          :className="'button pink'"
+          showText="*"
+        />
       </p>
       <p>
         <calc-button :eventFunc="addNumber" :className="'button red'" showText="4" />
         <calc-button :eventFunc="addNumber" :className="'button red'" showText="5" />
         <calc-button :eventFunc="addNumber" :className="'button red'" showText="6" />
-        <calc-button :eventFunc="clickOperator" :className="'button pink'" showText="-" />
+        <calc-button
+          id="subtract"
+          :eventFunc="clickOperator"
+          :className="'button pink'"
+          showText="-"
+        />
       </p>
       <p>
         <calc-button :eventFunc="addNumber" :className="'button red'" showText="1" />
         <calc-button :eventFunc="addNumber" :className="'button red'" showText="2" />
         <calc-button :eventFunc="addNumber" :className="'button red'" showText="3" />
-        <calc-button :eventFunc="clickOperator" :className="'button pink'" showText="+" />
+        <calc-button
+          id="plus"
+          :eventFunc="clickOperator"
+          :className="'button pink'"
+          showText="+"
+        />
       </p>
       <p>
         <calc-button :eventFunc="addNumber" :className="'button red'" showText="0" />
         <calc-button :eventFunc="addNumber" :className="'button red'" showText="." />
         <calc-button :eventFunc="addNumber" :className="'button red'" showText="c" />
-        <calc-button :eventFunc="submit" :className="'button orange'" showText="=" />
+        <calc-button
+          :eventFunc="submit"
+          :className="'button orange'"
+          showText="="
+        />
       </p>
     </div>
   </div>
@@ -45,55 +69,66 @@ import CalcButton from './components/CalcButton.vue';
 
 @Component({
   components: {
-      CalcInput,
-      CalcButton
-    }
+    CalcInput,
+    CalcButton,
+  },
 })
 export default class App extends Vue {
   total: number = 0;
   memory: number = 0;
+  clickedOperator: string = '';
 
   addNumber({ target }: { target: HTMLInputElement }): void {
-    this.total += Number(target.textContent!.trim());
+    if (this.total && this.memory) this.reset();
+    const targetNumber = target.textContent!.trim();
+
+    this.total =
+      this.total !== 0
+        ? Number(String(this.total) + targetNumber)
+        : Number(targetNumber);
   }
 
-  clearTotal(): void {
+  reset(): void {
     this.total = 0;
-  }
-
-  isOperator(operator: string): boolean {
-    const { total } = this;
-    return total.includes(operator)
+    this.memory = 0;
+    this.clickedOperator = '';
   }
 
   clickOperator({ target }: { target: HTMLInputElement }): void {
-    this.memory = this.total;
-    this.clearTotal();
+    const { total } = this;
+    const { id } = target;
+
+    if (total === 0) return;
+
+    this.clickedOperator = id;
+    this.memory = total;
+    this.total = 0;
   }
 
+  // TODO: v-model 인식안됨
   submit(): void {
     let { total } = this;
     let result: number = 0;
-    
-    if (this.isOperator('+')) {
-      this.total = (this.memory + this.total).toString();
-    }
-    
-    if (this.isOperator('-')) {
-      this.total = (this.memory - this.total).toString();
-    }
-    
-    if (this.isOperator('*')) {
-      this.total = (this.memory * this.total).toString();
-    }
-    
-    if (this.isOperator('/')) {
-      this.total = (this.memory / this.total).toString();
+
+    switch (this.clickedOperator) {
+      case 'plus':
+        this.total = this.memory + this.total;
+        break;
+      case 'subtract':
+        this.total = this.memory - this.total;
+        break;
+      case 'multi':
+        this.total = this.memory * this.total;
+        break;
+      case 'divide':
+        this.total = this.memory / this.total;
+        break;
+
+      default:
+        break;
     }
 
-    console.log(this.memory + ' ' + this.total)
-
-    // this.total = String(result);
+    this.clickedOperator = '';
   }
 }
 </script>

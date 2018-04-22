@@ -1,7 +1,7 @@
 <template>
   <div class="display">
     <input
-      v-model.lazy="total"
+      v-model="total"
       @keydown.enter="submit"
       type="text"
       size="15.75"
@@ -16,11 +16,10 @@ import Component from 'vue-class-component';
 @Component({
   name: 'CalcInput',
   props: {
-    total: String,
-  }
+    total: Number,
+  },
 })
-export default class CalcInput extends Vue {
-}
+export default class CalcInput extends Vue {}
 </script>
 
 <style scoped>
