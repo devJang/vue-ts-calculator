@@ -1,11 +1,15 @@
 <template>
   <div class="box">
-    <calc-input :total="total" />
+    <calc-input
+      :total="total"
+      @input="changeNumberPad"
+      @isOperator="keyUpOperator"
+    />
     <div class="keys">
       <p>
         <calc-button :eventFunc="reset" :className="'button gray'" showText="mrc" />
-        <calc-button :eventFunc="addNumber" :className="'button gray'" showText="(" />
-        <calc-button :eventFunc="addNumber" :className="'button gray'" showText=")" />
+        <calc-button :eventFunc="clickNumberPad" :className="'button gray'" showText="(" />
+        <calc-button :eventFunc="clickNumberPad" :className="'button gray'" showText=")" />
         <calc-button
           id="divide"
           :eventFunc="clickOperator"
@@ -14,9 +18,9 @@
         />
       </p>
       <p>
-        <calc-button :eventFunc="addNumber" :className="'button red'" showText="7" />
-        <calc-button :eventFunc="addNumber" :className="'button red'" showText="8" />
-        <calc-button :eventFunc="addNumber" :className="'button red'" showText="9" />
+        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="7" />
+        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="8" />
+        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="9" />
         <calc-button
           id="multi"
           :eventFunc="clickOperator"
@@ -25,9 +29,9 @@
         />
       </p>
       <p>
-        <calc-button :eventFunc="addNumber" :className="'button red'" showText="4" />
-        <calc-button :eventFunc="addNumber" :className="'button red'" showText="5" />
-        <calc-button :eventFunc="addNumber" :className="'button red'" showText="6" />
+        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="4" />
+        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="5" />
+        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="6" />
         <calc-button
           id="subtract"
           :eventFunc="clickOperator"
@@ -36,9 +40,9 @@
         />
       </p>
       <p>
-        <calc-button :eventFunc="addNumber" :className="'button red'" showText="1" />
-        <calc-button :eventFunc="addNumber" :className="'button red'" showText="2" />
-        <calc-button :eventFunc="addNumber" :className="'button red'" showText="3" />
+        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="1" />
+        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="2" />
+        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="3" />
         <calc-button
           id="plus"
           :eventFunc="clickOperator"
@@ -47,9 +51,9 @@
         />
       </p>
       <p>
-        <calc-button :eventFunc="addNumber" :className="'button red'" showText="0" />
-        <calc-button :eventFunc="addNumber" :className="'button red'" showText="." />
-        <calc-button :eventFunc="addNumber" :className="'button red'" showText="c" />
+        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="0" />
+        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="." />
+        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="c" />
         <calc-button
           :eventFunc="submit"
           :className="'button orange'"
@@ -78,7 +82,7 @@ export default class App extends Vue {
   memory: number = 0;
   clickedOperator: string = '';
 
-  addNumber({ target }: { target: HTMLInputElement }): void {
+  clickNumberPad({ target }: { target: HTMLInputElement }): void {
     if (this.total && this.memory) this.reset();
     const targetNumber = target.textContent!.trim();
 
@@ -88,10 +92,20 @@ export default class App extends Vue {
         : Number(targetNumber);
   }
 
+  changeNumberPad(value: string): void {
+    this.total = Number(value);
+  }
+
   reset(): void {
     this.total = 0;
     this.memory = 0;
     this.clickedOperator = '';
+  }
+
+  // TODO: 키 입력 연산자 필요
+  keyUpOperator(test: any): void {
+    console.log(typeof test);
+    console.log(test);
   }
 
   clickOperator({ target }: { target: HTMLInputElement }): void {
@@ -105,7 +119,6 @@ export default class App extends Vue {
     this.total = 0;
   }
 
-  // TODO: v-model 인식안됨
   submit(): void {
     let { total } = this;
     let result: number = 0;

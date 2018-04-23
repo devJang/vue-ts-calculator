@@ -1,8 +1,13 @@
 <template>
   <div class="display">
     <input
-      v-model="total"
+      :value="total"
+      @change="inputChange"
       @keydown.enter="submit"
+      @keydown.shift.56="isOperator"
+      @keydown.shift.187="isOperator"
+      @keydown.189="isOperator"
+      @keydown.191="isOperator"
       type="text"
       size="15.75"
     >
@@ -11,15 +16,22 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Component, Prop } from 'vue-property-decorator';
 
 @Component({
-  name: 'CalcInput',
   props: {
     total: Number,
   },
 })
-export default class CalcInput extends Vue {}
+export default class CalcInput extends Vue {
+  inputChange(event: { target: HTMLInputElement }): void {
+    this.$emit('input', event.target.value);
+  }
+
+  isOperator(event: { target: HTMLInputElement }): void {
+    this.$emit('isOperator', event.target.value);
+  }
+}
 </script>
 
 <style scoped>
