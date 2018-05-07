@@ -2,14 +2,9 @@
   <div class="display">
     <input
       :value="total"
-      @change="inputChange"
-      @keydown.enter="submit"
-      @keydown.shift.56="isOperator"
-      @keydown.shift.187="isOperator"
-      @keydown.189="isOperator"
-      @keydown.191="isOperator"
       type="text"
       size="15.75"
+      readonly
     >
   </div>
 </template>
@@ -24,13 +19,6 @@ import { Component, Prop } from 'vue-property-decorator';
   },
 })
 export default class CalcInput extends Vue {
-  inputChange(event: { target: HTMLInputElement }): void {
-    this.$emit('input', event.target.value);
-  }
-
-  isOperator(event: { target: HTMLInputElement }): void {
-    this.$emit('isOperator', event.target.value);
-  }
 }
 </script>
 

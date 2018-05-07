@@ -2,8 +2,6 @@
   <div class="box">
     <calc-input
       :total="total"
-      @input="changeNumberPad"
-      @isOperator="keyUpOperator"
     />
     <div class="keys">
       <p>
@@ -11,7 +9,6 @@
         <calc-button :eventFunc="clickNumberPad" :className="'button gray'" showText="(" />
         <calc-button :eventFunc="clickNumberPad" :className="'button gray'" showText=")" />
         <calc-button
-          id="divide"
           :eventFunc="clickOperator"
           :className="'button pink'"
           showText="/"
@@ -22,7 +19,6 @@
         <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="8" />
         <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="9" />
         <calc-button
-          id="multi"
           :eventFunc="clickOperator"
           :className="'button pink'"
           showText="*"
@@ -33,7 +29,6 @@
         <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="5" />
         <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="6" />
         <calc-button
-          id="subtract"
           :eventFunc="clickOperator"
           :className="'button pink'"
           showText="-"
@@ -44,7 +39,6 @@
         <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="2" />
         <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="3" />
         <calc-button
-          id="plus"
           :eventFunc="clickOperator"
           :className="'button pink'"
           showText="+"
@@ -83,7 +77,6 @@ export default class App extends Vue {
   clickedOperator: string = '';
 
   clickNumberPad({ target }: { target: HTMLInputElement }): void {
-    if (this.total && this.memory) this.reset();
     const targetNumber = target.textContent!.trim();
 
     this.total =
@@ -92,48 +85,37 @@ export default class App extends Vue {
         : Number(targetNumber);
   }
 
-  changeNumberPad(value: string): void {
-    this.total = Number(value);
-  }
-
   reset(): void {
     this.total = 0;
     this.memory = 0;
     this.clickedOperator = '';
   }
 
-  // TODO: 키 입력 연산자 필요
-  keyUpOperator(test: any): void {
-    console.log(typeof test);
-    console.log(test);
-  }
-
   clickOperator({ target }: { target: HTMLInputElement }): void {
     const { total } = this;
-    const { id } = target;
 
     if (total === 0) return;
 
-    this.clickedOperator = id;
+    this.clickedOperator = target.innerText;
     this.memory = total;
     this.total = 0;
   }
 
   submit(): void {
-    let { total } = this;
+    let { total, clickedOperator } = this;
     let result: number = 0;
 
     switch (this.clickedOperator) {
-      case 'plus':
+      case '+':
         this.total = this.memory + this.total;
         break;
-      case 'subtract':
+      case '-':
         this.total = this.memory - this.total;
         break;
-      case 'multi':
+      case '*':
         this.total = this.memory * this.total;
         break;
-      case 'divide':
+      case '/':
         this.total = this.memory / this.total;
         break;
 
