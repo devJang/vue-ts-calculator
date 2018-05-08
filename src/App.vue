@@ -5,7 +5,7 @@
     />
     <div class="keys">
       <p>
-        <calc-button :eventFunc="reset" :className="'button gray'" showText="mrc" />
+        <calc-button :eventFunc="reset()" :className="'button gray'" showText="mrc" />
         <calc-button :eventFunc="clickNumberPad" :className="'button gray'" showText="(" />
         <calc-button :eventFunc="clickNumberPad" :className="'button gray'" showText=")" />
         <calc-button
@@ -61,6 +61,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { State, Mutation } from 'vuex-class';
+import { CalcState } from './types';
 
 import CalcInput from './components/CalcInput.vue';
 import CalcButton from './components/CalcButton.vue';
@@ -72,58 +74,54 @@ import CalcButton from './components/CalcButton.vue';
   },
 })
 export default class App extends Vue {
-  total: number = 0;
-  memory: number = 0;
-  clickedOperator: string = '';
+  @State total: CalcState;
+  @State memory: CalcState;
+  @State clickedOperator: CalcState;
 
+  @Mutation reset: any;
+
+  // TODO:
   clickNumberPad({ target }: { target: HTMLInputElement }): void {
     const targetNumber = target.textContent!.trim();
 
-    this.total =
-      this.total !== 0
-        ? Number(String(this.total) + targetNumber)
-        : Number(targetNumber);
+    // this.total = this.total !== 0 ? Number(String(this.total) + targetNumber) : Number(targetNumber);
   }
 
-  reset(): void {
-    this.total = 0;
-    this.memory = 0;
-    this.clickedOperator = '';
-  }
-
+  // TODO:
   clickOperator({ target }: { target: HTMLInputElement }): void {
     const { total } = this;
 
-    if (total === 0) return;
+    // if (total === 0) return;
 
-    this.clickedOperator = target.innerText;
-    this.memory = total;
-    this.total = 0;
+    // this.clickedOperator = target.innerText;
+    // this.memory = total;
+    // this.total = 0;
   }
 
+  // TODO:
   submit(): void {
     let { total, clickedOperator } = this;
     let result: number = 0;
 
-    switch (this.clickedOperator) {
-      case '+':
-        this.total = this.memory + this.total;
-        break;
-      case '-':
-        this.total = this.memory - this.total;
-        break;
-      case '*':
-        this.total = this.memory * this.total;
-        break;
-      case '/':
-        this.total = this.memory / this.total;
-        break;
+    // switch (this.clickedOperator) {
+    //   case '+':
+    //     this.total = this.memory + this.total;
+    //     break;
+    //   case '-':
+    //     this.total = this.memory - this.total;
+    //     break;
+    //   case '*':
+    //     this.total = this.memory * this.total;
+    //     break;
+    //   case '/':
+    //     this.total = this.memory / this.total;
+    //     break;
 
-      default:
-        break;
-    }
+    //   default:
+    //     break;
+    // }
 
-    this.clickedOperator = '';
+    // this.clickedOperator = '';
   }
 }
 </script>
