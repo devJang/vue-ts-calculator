@@ -6,48 +6,48 @@
     <div class="keys">
       <p>
         <calc-button :eventFunc="reset" :className="'button gray'" showText="mrc" />
-        <calc-button :eventFunc="clickNumberPad" :className="'button gray'" showText="(" />
-        <calc-button :eventFunc="clickNumberPad" :className="'button gray'" showText=")" />
+        <calc-button :eventFunc="inputNumber" :className="'button gray'" showText="(" />
+        <calc-button :eventFunc="inputNumber" :className="'button gray'" showText=")" />
         <calc-button
-          :eventFunc="clickOperator"
+          :eventFunc="inputOperator"
           :className="'button pink'"
           showText="/"
         />
       </p>
       <p>
-        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="7" />
-        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="8" />
-        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="9" />
+        <calc-button :eventFunc="inputNumber" :className="'button red'" showText="7" />
+        <calc-button :eventFunc="inputNumber" :className="'button red'" showText="8" />
+        <calc-button :eventFunc="inputNumber" :className="'button red'" showText="9" />
         <calc-button
-          :eventFunc="clickOperator"
+          :eventFunc="inputOperator"
           :className="'button pink'"
           showText="*"
         />
       </p>
       <p>
-        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="4" />
-        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="5" />
-        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="6" />
+        <calc-button :eventFunc="inputNumber" :className="'button red'" showText="4" />
+        <calc-button :eventFunc="inputNumber" :className="'button red'" showText="5" />
+        <calc-button :eventFunc="inputNumber" :className="'button red'" showText="6" />
         <calc-button
-          :eventFunc="clickOperator"
+          :eventFunc="inputOperator"
           :className="'button pink'"
           showText="-"
         />
       </p>
       <p>
-        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="1" />
-        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="2" />
-        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="3" />
+        <calc-button :eventFunc="inputNumber" :className="'button red'" showText="1" />
+        <calc-button :eventFunc="inputNumber" :className="'button red'" showText="2" />
+        <calc-button :eventFunc="inputNumber" :className="'button red'" showText="3" />
         <calc-button
-          :eventFunc="clickOperator"
+          :eventFunc="inputOperator"
           :className="'button pink'"
           showText="+"
         />
       </p>
       <p>
-        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="0" />
-        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="." />
-        <calc-button :eventFunc="clickNumberPad" :className="'button red'" showText="c" />
+        <calc-button :eventFunc="inputNumber" :className="'button red'" showText="0" />
+        <calc-button :eventFunc="inputNumber" :className="'button red'" showText="." />
+        <calc-button :eventFunc="inputNumber" :className="'button red'" showText="c" />
         <calc-button
           :eventFunc="submit"
           :className="'button orange'"
@@ -74,9 +74,9 @@ import CalcButton from './components/CalcButton.vue';
 export default class App extends Vue {
   total: number = 0;
   memory: number = 0;
-  clickedOperator: string = '';
+  selectedOperator: string = '';
 
-  clickNumberPad({ target }: { target: HTMLInputElement }): void {
+  inputNumber({ target }: { target: HTMLInputElement }): void {
     const targetNumber = target.textContent!.trim();
 
     this.total =
@@ -88,24 +88,24 @@ export default class App extends Vue {
   reset(): void {
     this.total = 0;
     this.memory = 0;
-    this.clickedOperator = '';
+    this.selectedOperator = '';
   }
 
-  clickOperator({ target }: { target: HTMLInputElement }): void {
+  inputOperator({ target }: { target: HTMLInputElement }): void {
     const { total } = this;
 
     if (total === 0) return;
 
-    this.clickedOperator = target.innerText;
+    this.selectedOperator = target.innerText;
     this.memory = total;
     this.total = 0;
   }
 
   submit(): void {
-    let { total, clickedOperator } = this;
+    let { total, selectedOperator } = this;
     let result: number = 0;
 
-    switch (this.clickedOperator) {
+    switch (this.selectedOperator) {
       case '+':
         this.total = this.memory + this.total;
         break;
@@ -123,7 +123,7 @@ export default class App extends Vue {
         break;
     }
 
-    this.clickedOperator = '';
+    this.selectedOperator = '';
   }
 }
 </script>
