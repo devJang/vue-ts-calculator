@@ -1,21 +1,20 @@
 import { MutationTree, ActionTree } from 'vuex';
-
-import { CalcState } from '../types';
+import { CalcState, Operator } from '../types';
 
 export const state: CalcState = {
   total: 0,
   memory: 0,
-  // TODO: renaming
-  selectedOperator: '',
+  selectedOperator: Operator.empty,
 };
 
+// TODO: type error state
 export const mutations: MutationTree<CalcState> = {
   reset(state) {
     state.total = 0;
     state.memory = 0;
-    state.selectedOperator = '';
+    state.selectedOperator = Operator.empty;
   },
-  addNumber(state, newNumber) {
+  addNumber(state, newNumber: number) {
     state.total = newNumber;
   },
   addOperator(state, operator) {
@@ -23,9 +22,9 @@ export const mutations: MutationTree<CalcState> = {
     state.memory = state.total;
     state.total = 0;
   },
-  submitData(state, newTotal) {
+  submitData(state, newTotal: number) {
     state.total = newTotal;
-    state.selectedOperator = '';
+    state.selectedOperator = Operator.empty;
   },
 };
 

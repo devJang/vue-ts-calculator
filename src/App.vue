@@ -62,7 +62,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { State, Mutation, Action } from 'vuex-class';
-import { CalcState } from './types';
+import { CalcState, Operator } from './types';
 
 import CalcInput from './components/CalcInput.vue';
 import CalcButton from './components/CalcButton.vue';
@@ -78,35 +78,36 @@ export default class App extends Vue {
   @State memory: CalcState;
   @State selectedOperator: CalcState;
 
-  @Mutation reset: CalcState;
-  @Mutation submitData: CalcState;
+  @Mutation reset: void;
+  @Mutation submitData: void;
   @Action inputNumber: CalcState;
   @Action inputOperator: CalcState;
 
   submit(): void {
     let temp: number;
-    let { total, selectedOperator } = this;
+    let { total, selectedOperator, memory } = this;
     let result: number = 0;
 
-    // TODO: Add type
-    // switch (this.selectedOperator) {
-    //   case '+':
-    //     temp = this.memory + this.total;
-    //     break;
-    //   case '-':
-    //     temp = this.memory - this.total;
-    //     break;
-    //   case '*':
-    //     temp = this.memory * this.total;
-    //     break;
-    //   case '/':
-    //     temp = this.memory / this.total;
-    //     break;
+    // TODO: Type error
+    switch (selectedOperator) {
+      case Operator.plus as any:
+        temp = Number(memory) + Number(total);
+        break;
+      case Operator.subtract as any:
+        temp = Number(memory) - Number(total);
+        break;
+      case Operator.multiple as any:
+        temp = Number(memory) * Number(total);
+        break;
+      case Operator.divide as any:
+        temp = Number(memory) / Number(total);
+        break;
 
-    //   default:
-    //     break;
-    // }
-    // this.submitData({ newTotal: temp });
+      default:
+        break;
+    }
+    // TODO: Type error
+    this.submitData({ newTotal: temp });
   }
 }
 </script>
