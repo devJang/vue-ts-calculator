@@ -74,39 +74,40 @@ import CalcButton from './components/CalcButton.vue';
   },
 })
 export default class App extends Vue {
-  @State total: CalcState;
-  @State memory: CalcState;
-  @State selectedOperator: CalcState;
+  @State calc: CalcState;
 
-  @Mutation reset: void;
-  @Mutation submitData: void;
-  @Action inputNumber: CalcState;
-  @Action inputOperator: CalcState;
+  // TODO: Remove any
+  @Mutation reset: any;
+  @Mutation submitData: any;
 
-  submit(): void {
+  // TODO: Remove any
+  @Action inputNumber: any;
+  @Action inputOperator: any;
+
+  submit() {
+    const { total, selectedOperator, memory } = this.calc;
+    const { plus, subtract, multiple, divide } = Operator
     let temp: number;
-    let { total, selectedOperator, memory } = this;
     let result: number = 0;
 
-    // TODO: Type error
     switch (selectedOperator) {
-      case Operator.plus as any:
-        temp = Number(memory) + Number(total);
+      case plus:
+        temp = memory + total;
         break;
-      case Operator.subtract as any:
-        temp = Number(memory) - Number(total);
+      case subtract:
+        temp = memory - total;
         break;
-      case Operator.multiple as any:
-        temp = Number(memory) * Number(total);
+      case multiple:
+        temp = memory * total;
         break;
-      case Operator.divide as any:
-        temp = Number(memory) / Number(total);
+      case divide:
+        temp = memory / total;
         break;
 
       default:
         break;
     }
-    // TODO: Type error
+    // TODO: before assigned
     this.submitData({ newTotal: temp });
   }
 }

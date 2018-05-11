@@ -17,7 +17,7 @@ export const mutations: MutationTree<CalcState> = {
   addNumber(state, newNumber: number) {
     state.total = newNumber;
   },
-  addOperator(state, operator) {
+  addOperator(state, operator: Operator) {
     state.selectedOperator = operator;
     state.memory = state.total;
     state.total = 0;
